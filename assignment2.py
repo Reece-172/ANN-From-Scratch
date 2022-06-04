@@ -616,27 +616,12 @@ b3 = np.array([[6.45093135],
 
 n = 50
 
-# data = pca(data, n)
-
-# data = []
-# for line in sys.stdin:
-#     if line != '\n':
-#         str_input = line.split(" ")
-#         float_input = [float(str_input[i]) for i in range(len(str_input))]
-#         data.append(float_input)
-#     else:
-#         break
-# print(data)
-
-# line = sys.stdin.readline()
-# str_data = line.split(" ")
-# data = np.array([float(str_data[i]) for i in range(len(str_data))])
-# data = data.reshape(-1, 1)
-# data = np.loadtxt("inputs.txt")
-# data = pca(data, n)
-# data = data[:, :100]
-# data = data.T
+line = sys.stdin.readline()
+str_data = line.split(" ")
+data = np.array([float(str_data[i]) for i in range(len(str_data))])
+data = pca(data, n)
+data = data.reshape(-1, 1)
 # prediction = forward_prop(data, w1, w2, w3, b1, b2, b3)
 # output = get_prediction(prediction)
 
-sys.stdout.write(str(w1.shape))
+sys.stdout.write(str(data))
