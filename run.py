@@ -1,16 +1,8 @@
 import numpy as np
 import sys
-import sklearn.decomposition as skd
-import sklearn.preprocessing as skp
 
-def normalize(data):
-    return skp.normalize(data)
-
-def pca(data, n): #perform PCA on data to reduce dimensionality (change the n_components / features to see how it affects the results)
-    data = normalize(data)
-    pca = skd.PCA(n_components=n)
-    pca.fit(data)
-    return pca.transform(data)
+def normalize(data):#normalize the data
+    return data - data.mean() / data.std()
 
 def softmax(Z):
     return np.exp(Z)/np.sum(np.exp(Z), axis=0)
@@ -36,12 +28,14 @@ w2 = np.loadtxt('w2.txt')
 b2 = np.loadtxt('b2.txt')
 w3 = np.loadtxt('w3.txt')
 b3 = np.loadtxt('b3.txt')
+b1 = b1.reshape(20,1)
+b2 = b2.reshape(20,1)
+b3 = b3.reshape(10,1)
 
-n = 50
+eigens = np.loadtxt("eigens.txt")
 data = np.loadtxt(sys.stdin)
-data = pca(data, n)
-testing_data = data[1900:].T #get sample from the end of the data set
-
-# output = get_predictions(forward_prop(testing_data, w1, b1, w2, b2, w3, b3))
-mult = np.dot(w1, testing_data)+b1 # this gives an error but it works in the notebook
-sys.stdout.write(str(mult.shape))
+data = normalize(data)
+scaled_data = np.dot(data, eigens)
+test_data = scaled_data.reshape(50,1)
+output = get_predictions(forward_prop(test_data, w1, b1, w2, b2, w3, b3))
+sys.stdout.write(str(output))
