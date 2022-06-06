@@ -1,8 +1,10 @@
 import numpy as np
+import sklearn.preprocessing as skp
 import sys
+import pickle as pk
 
 def normalize(data):#normalize the data
-    return data - data.mean() / data.std()
+    return skp.normalize(data)
 
 def softmax(Z):
     return np.exp(Z)/np.sum(np.exp(Z), axis=0)
@@ -32,22 +34,20 @@ w2 = np.loadtxt('w2.txt')
 b2 = np.loadtxt('b2.txt')
 w3 = np.loadtxt('w3.txt')
 b3 = np.loadtxt('b3.txt')
-b1 = b1.reshape(20,1)
-b2 = b2.reshape(20,1)
+b1 = b1.reshape(50,1)
+b2 = b2.reshape(50,1)
 b3 = b3.reshape(10,1)
+
 labels = np.loadtxt('labels.txt')
-labels = labels.reshape(2000,1)
-eigens = np.loadtxt("eigens.txt")
+
 allData = np.loadtxt(sys.stdin)
 allData = normalize(allData)
-predictions = []
-for data in allData:
-    scaled_data = np.dot(data, eigens)
-    test_data = scaled_data.reshape(50,1)
-    output = get_predictions(forward_prop(test_data, w1, b1, w2, b2, w3, b3))
-    predictions.append(output)
-    # sys.stdout.write(str(output))
+pca = pk.load(open('pca.pkl', 'rb'))
+allData = pca.transform(allData)
+test_data = allData.T
+predictions = get_predictions(forward_prop(test_data, w1, b1, w2, b2, w3, b3))
+for prediction in predictions:
+    sys.stdout.write(str(prediction))
 
-predictions = np.array(predictions)
-print(get_accuracy(predictions, labels))
-#python3 run.py<test.txt
+# accuracy = get_accuracy(predictions, labels)
+# sys.stdout.write(str(accuracy))
