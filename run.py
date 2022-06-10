@@ -1,7 +1,7 @@
 import numpy as np
-import sklearn.preprocessing as skp
 import sys
 import pickle as pk
+import sklearn.preprocessing as skp
 
 def normalize(data):#normalize the data
     return skp.normalize(data)
@@ -38,16 +38,20 @@ b1 = b1.reshape(50,1)
 b2 = b2.reshape(50,1)
 b3 = b3.reshape(10,1)
 
-labels = np.loadtxt('labels.txt')
 
 allData = np.loadtxt(sys.stdin)
 allData = normalize(allData)
 pca = pk.load(open('pca.pkl', 'rb'))
-allData = pca.transform(allData)
-test_data = allData.T
-predictions = get_predictions(forward_prop(test_data, w1, b1, w2, b2, w3, b3))
-for prediction in predictions:
-    sys.stdout.write(str(prediction))
 
-# accuracy = get_accuracy(predictions, labels)
-# sys.stdout.write(str(accuracy))
+if allData.shape == (2352,):
+    allData = allData.reshape(1,-1)
+    allData = pca.transform(allData)
+    test_data = allData.reshape(-1,1)
+    prediction = get_predictions(forward_prop(test_data, w1, b1, w2, b2, w3, b3))
+    sys.stdout.write(str(prediction[0]))
+else:
+    allData = pca.transform(allData)
+    test_data = allData.T
+    predictions = get_predictions(forward_prop(test_data, w1, b1, w2, b2, w3, b3))
+    for prediction in predictions:
+        sys.stdout.write(str(prediction))
